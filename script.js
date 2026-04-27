@@ -1,6 +1,66 @@
 const categories = document.querySelector(".categories");
 const trees = document.querySelector(".trees");
 const cart = document.querySelector(".cart");
+const cartItemsContainer=document.querySelector(".cart-items");
+const emptyCartMessage=document.querySelector('.empty-cart');
+let cartArray=[];
+
+const removeFromCart=(itemId)=>{
+  const itemIndex=cartArray.findIndex(item=>item.id===itemId);
+  if(itemIndex!==-1){
+    if(cartArray[itemIndex].quantity>1){
+      cartArray[itemIndex].quantity-=1;
+    } else {
+      cartArray.splice(itemIndex, 1);
+    }
+    updateCartUI();
+  }
+};
+
+const updateCartUI=()=>{
+  if(cartArray.length===0){
+    emptyCartMessage.classList.remove('hidden');
+  } else {
+    emptyCartMessage.classList.add('hidden');
+    cartItemsContainer.innerHTML="";
+    cartArray.forEach(item=>{
+      const itemDiv=document.createElement("div");
+      itemDiv.classList.add("cart-item", "flex", "justify-between", "items-center", "mb-2",'shadow-xl', 'p-2', 'rounded-lg','bg-gray-100');
+      itemDiv.innerHTML=`
+      <div class="flex flex-col items-center space-y-2">
+        <span class="font-semibold text-2xl">${item.name}</span>
+        <span class="text-lg font-bold">$${item.price}x${item.quantity}</span>
+
+      </div>
+
+      <div class="flex flex-col items-center space-y-5">
+        <span class="font-semibold text-2xl btn btn-error btn-soft" onclick="removeFromCart(${item.id})">x</span>
+        <span class="text-lg font-bold">$${item.price}x${item.quantity}</span>
+
+      </div>
+
+      
+      
+      `;
+      cartItemsContainer.appendChild(itemDiv);
+      document.getElementById('total-price').innerText=`Total:$${cartArray.reduce((total,item)=>total+item.price*item.quantity,0)}`;
+
+    });
+  }
+}
+
+const addToCart = (treeJson) => {
+  const tree=JSON.parse(treeJson);
+  console.log(tree);
+  const existingItem = cartArray.find(item => item.id === tree.id);
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cartArray.push({ ...tree, quantity: 1 });
+  }
+  
+  updateCartUI();
+};
 
 const displayTrees = (allTrees) => {
   trees.innerHTML = "";
@@ -9,19 +69,21 @@ const displayTrees = (allTrees) => {
     const treeDiv = document.createElement("div");
     treeDiv.classList.add('tree-card');
     treeDiv.innerHTML = `
-        <div class="card bg-base-100 w-sm shadow-sm">
+        <div class="card bg-base-100 w-50 max-h-200 shadow-sm">
         <figure>
-            <img src="${tree.image}" alt="${tree.name}" title="${tree.name}" />
+            <img src="${tree.image}" alt="${tree.name}" title="${tree.name}"  class="w-full h-64 object-cover"/>
         </figure>
-        <div class="card-body">
-            <h2 class="card-title">
-                Card Title
-                <div class="badge badge-secondary">NEW</div>
+        <div class="card-body border-t-rounded-lg">
+            <h2 class="card-title text-2xl font-bold hover:text-green-500">
+                ${tree.name}
             </h2>
-            <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-            <div class="card-actions justify-end">
-                <div class="badge badge-outline">Fashion</div>
-                <div class="badge badge-outline">Products</div>
+
+            <p class="line-clamp-2 overflow-hidden text-ellipsis ">${tree.description}</p>
+            <p class="text-lg font-semibold border-2 border-green-500 text-green-500 px-2 py-1 rounded-lg">${tree.category}</p>
+            <div class="card-actions justify-between items-center mt-4">
+                <span class="text-xl font-bold text-green-500">$${tree.price}</span>
+                <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200" "><i class="fa-solid fa-cart-arrow-down"></i></span>
+                
             </div>
         </div>
     </div>
@@ -29,11 +91,27 @@ const displayTrees = (allTrees) => {
         `;
 
         trees.appendChild(treeDiv);
+        const addToCartBtn=treeDiv.querySelector(".addToCartBtn");
+        addToCartBtn.addEventListener("click", () => addToCart(JSON.stringify(tree)));
   });
 };
 
+
+
+const setActiveButton = (categoryId) => {
+  const allBtns = document.querySelectorAll(".categories .btn");
+  allBtns.forEach((btn) => btn.classList.remove("bg-green-500", "text-white"));
+  const activeBtn = document.getElementById(categoryId);
+  if (activeBtn) activeBtn.classList.add("bg-green-500", "text-white");
+};
+
 const loadTrees = async (categoryId) => {
-  const url = `https://openapi.programming-hero.com/api/category/${categoryId}`;
+  setActiveButton(categoryId);
+
+  const url = categoryId === "all"
+    ? "https://openapi.programming-hero.com/api/plants"
+    : `https://openapi.programming-hero.com/api/category/${categoryId}`;
+
   const res = await fetch(url);
   const data = await res.json();
 
@@ -54,6 +132,7 @@ const displayCategories = (allCategories) => {
   categories.appendChild(title);
 
   const Allbtn = document.createElement("button");
+  Allbtn.id='all';
   Allbtn.classList.add(
     "btn",
     "btn-soft",
@@ -67,11 +146,13 @@ const displayCategories = (allCategories) => {
   );
   Allbtn.innerText = "All Trees";
   // add event listener to this button
-  Allbtn.addEventListener("click", () => loadTrees("all"));
   categories.appendChild(Allbtn);
+
+  Allbtn.addEventListener("click", () => loadTrees('all'));
 
   allCategories.forEach((category) => {
     const button = document.createElement("button");
+    button.id=category.id;
     button.classList.add(
       "btn",
       "btn-soft",
@@ -97,6 +178,14 @@ const loadCategories = async () => {
   displayCategories(data.categories);
 };
 
-// cart portion
 
-loadCategories();
+
+
+  
+const init = async () => {
+  await loadCategories();
+  await loadTrees('all');
+};
+
+init();
+
