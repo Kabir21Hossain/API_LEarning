@@ -82,8 +82,7 @@ const displayTrees = (allTrees) => {
             <p class="text-lg font-semibold border-2 border-green-500 text-green-500 px-2 py-1 rounded-lg">${tree.category}</p>
             <div class="card-actions justify-between items-center mt-4">
                 <span class="text-xl font-bold text-green-500">$${tree.price}</span>
-                <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200" "><i class="fa-solid fa-cart-arrow-down"></i></span>
-                
+                <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200"><i class="fa-solid fa-cart-arrow-down"></i></span>
             </div>
         </div>
     </div>
