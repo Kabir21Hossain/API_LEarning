@@ -32,4 +32,5 @@ const loadCategories=async()=>{
 
 // cart portion
 
+
 loadCategories();
