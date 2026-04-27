@@ -6,7 +6,40 @@ const cartItemsContainer=document.querySelector(".cart-items");
 const emptyCartMessage=document.querySelector('.empty-cart');
 const pageLoader = document.getElementById('page-loader');
 const treeLoader = document.getElementById('tree-loader');
+const modal = document.getElementById('my_modal_1');
+const modalContent = document.getElementById('modal-content');
 let cartArray=[];
+
+const viewDetails = (tree) => {
+  if (!modalContent || !modal) {
+    console.error('Modal content or dialog not found.');
+    return;
+  }
+
+  modalContent.innerHTML = `
+        <div class="card bg-base-100 w-full shadow-sm">
+          <figure>
+            <img src="${tree.image}" alt="${tree.name}" title="${tree.name}" class="w-full h-64 object-cover" />
+          </figure>
+          <div class="card-body border-t-rounded-lg">
+            <h2 class="card-title text-2xl font-bold hover:text-green-500">
+              ${tree.name}
+            </h2>
+            <p class="">${tree.description}</p>
+            <p class="text-lg font-semibold border-2 border-green-500 text-green-500 px-2 py-1 rounded-lg">${tree.category}</p>
+            <div class="card-actions justify-between items-center mt-4">
+              <span class="text-xl font-bold text-green-500">$${tree.price}</span>
+              <button type="button" class="addToCartBtn btn btn-soft text-green-500 hover:bg-green-200">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+    `;
+
+  const addToCartBtn = modalContent.querySelector('.addToCartBtn');
+  addToCartBtn?.addEventListener('click', () => addToCart(JSON.stringify(tree)));
+
+  modal.showModal();
+};
 
 const showLoader = () => {
   pageLoader?.classList.remove('hidden');
@@ -105,7 +138,10 @@ const displayTrees = (allTrees) => {
             <p class="text-lg font-semibold border-2 border-green-500 text-green-500 px-2 py-1 rounded-lg">${tree.category}</p>
             <div class="card-actions justify-between items-center mt-4">
               <span class="text-xl font-bold text-green-500">$${tree.price}</span>
-              <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200"><i class="fa-solid fa-cart-arrow-down"></i></span>
+              <div class="flex gap-2">
+                <button type="button" class="view-details-btn btn btn-ghost btn-sm">View</button>
+                <button type="button" class="addToCartBtn btn btn-soft btn-sm text-green-500 hover:bg-green-200">Add</button>
+              </div>
             </div>
           </div>
         </div>
@@ -113,7 +149,9 @@ const displayTrees = (allTrees) => {
 
     trees.appendChild(treeDiv);
     const addToCartBtn = treeDiv.querySelector(".addToCartBtn");
+    const viewDetailsBtn = treeDiv.querySelector(".view-details-btn");
     addToCartBtn.addEventListener("click", () => addToCart(JSON.stringify(tree)));
+    viewDetailsBtn.addEventListener("click", () => viewDetails(tree));
   });
 };
 

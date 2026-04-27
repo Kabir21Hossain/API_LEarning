@@ -45,9 +45,10 @@
         }
 
         @media (min-width: 768px) {
+
             .category-panel,
             .cart-panel {
-                width:300px;
+                width: 300px;
                 position: sticky;
                 top: 1rem;
             }
@@ -66,14 +67,16 @@
 
     <section class="main grid grid-cols-1 gap-4 p-4 bg-gray-100 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
         <!-- categories -->
-        <div class="category-panel categories order-1 lg:order-none w-full px-4 py-10 shadow-xl flex flex-row flex-wrap lg:flex-col gap-2 justify-start bg-white rounded-lg">
+        <div
+            class="category-panel categories order-1 lg:order-none w-full px-4 py-10 shadow-xl flex flex-row flex-wrap lg:flex-col gap-2 justify-start bg-white rounded-lg">
             <h2 id="category-title" class="text-2xl font-bold mb-4"></h2>
         </div>
 
         <!-- trees -->
         <div class="order-2 lg:order-none w-full py-4 shadow-xl bg-white rounded-lg">
-            <h2 class="text-center text-4xl sm:text-5xl md:text-6xl text-green-400 font-extrabold">Choose your Trees</h2>
-            
+            <h2 class="text-center text-4xl sm:text-5xl md:text-6xl text-green-400 font-extrabold">Choose your Trees
+            </h2>
+
             <div id="tree-loader" class="flex hidden flex-col items-center justify-center py-10">
                 <span class="loading loading-dots loading-xl"></span>
                 <p class="mt-4 text-center text-lg font-medium text-gray-600">Loading trees...</p>
@@ -86,7 +89,8 @@
             <div class="head flex items-center justify-between mb-4">
                 <h2 id="cart-title" class="text-4xl font-bold mb-4">Cart</h2>
                 <div class="flex items-center gap-3 relative">
-                    <span id="cart-badge" class="badge badge-secondary text-lg absolute -top-4 -right-8 rounded-full w-10 h-10">0</span>
+                    <span id="cart-badge"
+                        class="badge badge-secondary text-lg absolute -top-4 -right-8 rounded-full w-10 h-10">0</span>
                     <span><i class="fa-solid fa-cart-arrow-down fa-2x"></i></span>
                 </div>
             </div>
@@ -99,7 +103,8 @@
 
                 <div class="cart-items"></div>
 
-                <div class="total flex flex-col sm:flex-row justify-between items-center mt-4 px-4 py-6 shadow-md bg-green-100 rounded gap-3">
+                <div
+                    class="total flex flex-col sm:flex-row justify-between items-center mt-4 px-4 py-6 shadow-md bg-green-100 rounded gap-3">
                     <p class="text-xl font-bold">Total:</p>
                     <p id="total-price" class="text-xl font-bold">$0.00</p>
                 </div>
@@ -108,7 +113,17 @@
     </section>
 
 
-    
+    <!-- Open the modal using ID.showModal() method -->
+    <!-- <button class="btn" onclick="my_modal_1.showModal()">open modal</button> -->
+    <dialog id="my_modal_1" class="modal">
+        <form method="dialog" class="modal-box relative">
+            <button type="submit" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close modal">✕</button>
+            <div id="modal-content"></div>
+            <div class="modal-action">
+                <button class="btn">Close</button>
+            </div>
+        </form>
+    </dialog>
 
 
 
