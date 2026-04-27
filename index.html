@@ -22,25 +22,26 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-    </style>    
+    </style>
 </head>
 
 <body>
 
     <section class="main flex flex-col md:flex-row gap-4 p-4 bg-gray-100">
         <!-- categories -->
-        <div class="categories w-full min-h-100 md:w-1/4 md:min-h-screen px-4 py-10 shadow-xl flex flex-col gap-2 justify-evenly">
-            <h2  id="category-title" class="text-2xl font-bold mb-4"></h2>
+        <div
+            class="categories w-full min-h-100 md:w-1/5 md:min-h-screen px-4 py-10 shadow-xl flex flex-col gap-2 justify-start fixed z-100 top-0 left-0 bg-white">
+            <h2 id="category-title" class="text-2xl font-bold mb-4"></h2>
         </div>
 
         <!-- trees -->
-        <div class=" w-full min-h-100 md:w-2/4 md:min-h-screen py-4 shadow-xl ">
+        <div class=" w-full min-h-100 md:w-3/4 md:min-h-screen py-4 shadow-xl md:ml-[20%] md:mr-[20%] bg-white">
             <h2 class="text-center text-6xl text-green-400 font-extrabold">Choose your Trees</h2>
-            <div class="trees"></div>
+            <div class="trees flex flex-wrap gap-3 my-10 px-4"></div>
         </div>
 
         <!-- cart -->
-        <div class="w-full min-h-100 md:w-1/4 md:min-h-screen py-10 px-4 shadow-xl">
+        <div class="w-full min-h-100 md:w-1/5 md:min-h-screen py-10 px-4 shadow-xl fixed right-0 top-0 bg-white z-100">
             <div class="head flex items-center justify-between mb-4">
                 <h2 id="cart-title" class="text-4xl font-bold mb-4">Cart</h2>
                 <span><i class="fa-solid fa-cart-arrow-down fa-2x"></i></span>
@@ -64,9 +65,13 @@
     </section>
 
 
+    
+
+
 
 
 
     <script src="script.js"></script>
 </body>
+
 </html>
