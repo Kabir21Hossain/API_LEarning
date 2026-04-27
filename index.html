@@ -26,7 +26,6 @@
 
         .main {
             min-height: 100vh;
-            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -48,6 +47,7 @@
         @media (min-width: 768px) {
             .category-panel,
             .cart-panel {
+                width:300px;
                 position: sticky;
                 top: 1rem;
             }
@@ -57,15 +57,27 @@
 
 <body>
 
+    <!-- <div id="page-loader" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+        <div class="flex flex-col items-center gap-3 rounded-xl bg-white/90 p-6 shadow-xl">
+            <span class="loading loading-dots loading-xl text-green-600"></span>
+            <p class="text-lg font-semibold text-gray-800">Loading content...</p>
+        </div>
+    </div> -->
+
     <section class="main grid grid-cols-1 gap-4 p-4 bg-gray-100 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
         <!-- categories -->
-        <div class="category-panel categories order-1 lg:order-none w-full px-4 py-10 shadow-xl flex flex-col gap-2 justify-start bg-white rounded-lg">
+        <div class="category-panel categories order-1 lg:order-none w-full px-4 py-10 shadow-xl flex flex-row flex-wrap lg:flex-col gap-2 justify-start bg-white rounded-lg">
             <h2 id="category-title" class="text-2xl font-bold mb-4"></h2>
         </div>
 
         <!-- trees -->
         <div class="order-2 lg:order-none w-full py-4 shadow-xl bg-white rounded-lg">
             <h2 class="text-center text-4xl sm:text-5xl md:text-6xl text-green-400 font-extrabold">Choose your Trees</h2>
+            
+            <div id="tree-loader" class="flex hidden flex-col items-center justify-center py-10">
+                <span class="loading loading-dots loading-xl"></span>
+                <p class="mt-4 text-center text-lg font-medium text-gray-600">Loading trees...</p>
+            </div>
             <div class="trees my-10 px-2 sm:px-4"></div>
         </div>
 
@@ -73,7 +85,10 @@
         <div class="cart-panel order-3 lg:order-none w-full py-10 px-4 shadow-xl bg-white rounded-lg">
             <div class="head flex items-center justify-between mb-4">
                 <h2 id="cart-title" class="text-4xl font-bold mb-4">Cart</h2>
-                <span><i class="fa-solid fa-cart-arrow-down fa-2x"></i></span>
+                <div class="flex items-center gap-3 relative">
+                    <span id="cart-badge" class="badge badge-secondary text-lg absolute -top-4 -right-8 rounded-full w-10 h-10">0</span>
+                    <span><i class="fa-solid fa-cart-arrow-down fa-2x"></i></span>
+                </div>
             </div>
 
             <div class="cart">

@@ -1,9 +1,22 @@
 const categories = document.querySelector(".categories");
 const trees = document.querySelector(".trees");
 const cart = document.querySelector(".cart");
+const cartBadge = document.getElementById('cart-badge');
 const cartItemsContainer=document.querySelector(".cart-items");
 const emptyCartMessage=document.querySelector('.empty-cart');
+const pageLoader = document.getElementById('page-loader');
+const treeLoader = document.getElementById('tree-loader');
 let cartArray=[];
+
+const showLoader = () => {
+  pageLoader?.classList.remove('hidden');
+  treeLoader?.classList.remove('hidden');
+};
+
+const hideLoader = () => {
+  pageLoader?.classList.add('hidden');
+  treeLoader?.classList.add('hidden');
+};
 
 const removeFromCart=(itemId)=>{
   const itemIndex=cartArray.findIndex(item=>item.id===itemId);
@@ -18,8 +31,15 @@ const removeFromCart=(itemId)=>{
 };
 
 const updateCartUI=()=>{
+  const totalCount = cartArray.reduce((sum, item) => sum + item.quantity, 0);
+  if (cartBadge) {
+    cartBadge.textContent = totalCount;
+  }
+
   if(cartArray.length===0){
     emptyCartMessage.classList.remove('hidden');
+    cartItemsContainer.innerHTML = "";
+    document.getElementById('total-price').innerText = '$0.00';
   } else {
     emptyCartMessage.classList.add('hidden');
     cartItemsContainer.innerHTML="";
@@ -43,9 +63,8 @@ const updateCartUI=()=>{
       
       `;
       cartItemsContainer.appendChild(itemDiv);
-      document.getElementById('total-price').innerText=`Total:$${cartArray.reduce((total,item)=>total+item.price*item.quantity,0)}`;
-
     });
+    document.getElementById('total-price').innerText=`Total:$${cartArray.reduce((total,item)=>total+item.price*item.quantity,0)}`;
   }
 }
 
@@ -63,6 +82,11 @@ const addToCart = (treeJson) => {
 };
 
 const displayTrees = (allTrees) => {
+  if (!trees) {
+    console.error('Tree container not found.');
+    return;
+  }
+
   trees.innerHTML = "";
 
   allTrees.forEach((tree) => {
@@ -70,28 +94,26 @@ const displayTrees = (allTrees) => {
     treeDiv.classList.add('tree-card');
     treeDiv.innerHTML = `
         <div class="card bg-base-100 w-50 max-h-200 shadow-sm">
-        <figure>
-            <img src="${tree.image}" alt="${tree.name}" title="${tree.name}"  class="w-full h-64 object-cover"/>
-        </figure>
-        <div class="card-body border-t-rounded-lg">
+          <figure>
+            <img src="${tree.image}" alt="${tree.name}" title="${tree.name}" class="w-full h-64 object-cover" />
+          </figure>
+          <div class="card-body border-t-rounded-lg">
             <h2 class="card-title text-2xl font-bold hover:text-green-500">
-                ${tree.name}
+              ${tree.name}
             </h2>
-
-            <p class="line-clamp-2 overflow-hidden text-ellipsis ">${tree.description}</p>
+            <p class="line-clamp-2 overflow-hidden text-ellipsis">${tree.description}</p>
             <p class="text-lg font-semibold border-2 border-green-500 text-green-500 px-2 py-1 rounded-lg">${tree.category}</p>
             <div class="card-actions justify-between items-center mt-4">
-                <span class="text-xl font-bold text-green-500">$${tree.price}</span>
-                <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200"><i class="fa-solid fa-cart-arrow-down"></i></span>
+              <span class="text-xl font-bold text-green-500">$${tree.price}</span>
+              <span class="addToCartBtn text-xl font-bold text-green-500 btn btn-soft hover:bg-green-200"><i class="fa-solid fa-cart-arrow-down"></i></span>
             </div>
+          </div>
         </div>
-    </div>
-        
-        `;
+    `;
 
-        trees.appendChild(treeDiv);
-        const addToCartBtn=treeDiv.querySelector(".addToCartBtn");
-        addToCartBtn.addEventListener("click", () => addToCart(JSON.stringify(tree)));
+    trees.appendChild(treeDiv);
+    const addToCartBtn = treeDiv.querySelector(".addToCartBtn");
+    addToCartBtn.addEventListener("click", () => addToCart(JSON.stringify(tree)));
   });
 };
 
@@ -106,20 +128,30 @@ const setActiveButton = (categoryId) => {
 
 const loadTrees = async (categoryId) => {
   setActiveButton(categoryId);
+  showLoader();
+  trees.innerHTML = "";
 
   const url = categoryId === "all"
     ? "https://openapi.programming-hero.com/api/plants"
     : `https://openapi.programming-hero.com/api/category/${categoryId}`;
 
-  const res = await fetch(url);
-  const data = await res.json();
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
 
-  if (!data.plants || data.plants.length === 0) {
-    trees.innerHTML = `<p class="text-center text-lg font-semibold">No trees available for this category.</p>`;
-    return;
+    if (!data.plants || data.plants.length === 0) {
+      trees.innerHTML = `<p class="text-center text-lg font-semibold">No trees available for this category.</p>`;
+      return;
+    }
+
+    hideLoader();
+    displayTrees(data.plants);
+  } catch (error) {
+    trees.innerHTML = `<p class="text-center text-lg font-semibold text-red-500">Failed to load trees. Please try again.</p>`;
+    console.error('Tree loading error:', error);
+  } finally {
+    hideLoader();
   }
-
-  displayTrees(data.plants);
 };
 
 // categories portion
